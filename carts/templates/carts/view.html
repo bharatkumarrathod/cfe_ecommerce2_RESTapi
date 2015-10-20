@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block script %}
+    <script src="{% static 'js/flash_message.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+
+    $(".item-qty").change(function(){
+        //vent.preventDefault();
+        var item = $(this).prev("input[type='hidden']").val();
+        var qty =  $(this).val();
+        var data = {
+            item: item,
+            qty: qty
+        };
+{#        console.log(data);#}
+
+        //var cartUrl = "http://127.0.0.1:8000/cart/"
+        var cartUrl = $("#cart-form").attr('url');
+        while( cartUrl == null){
+            cartUrl = $("#cart-form").attr('url');
+        }
+
+        $.ajax({
+           type: "GET",
+            url: cartUrl,
+            data: data,
+            success: function(data){
+                //$("#jquery-message").text("Added " + data.item_added + " Delete " + data.deleted);
+                if(data.deleted){
+                    $("#item-" + item).fadeOut();
+                    $("#subtotal").text(data.subtotal);
+                    $("#tax_total").text(data.tax_total);
+                    $("#total").text(data.total);
+                    showFlashMessage("Item removed from cart");
+                } else {
+                    $("#item-line-total-"+item).text(data.line_total);
+                    $("#subtotal").text(data.subtotal);
+                    $("#tax_total").text(data.tax_total);
+                    $("#total").text(data.total);
+                    showFlashMessage("Your cart has been updated");
+                }
+
+                if(data.total_items == 0){
+                    $(".table, h2").fadeOut();
+                    var template = "{% include 'carts/empty_cart.html' %}";
+                    $("#cart-container").html(template);
+                }
+            },
+            error: function(response, error) {
+                console.log(response);
+                console.log(error);
+            }
+        });
+
+        // /$("#add-form").submit();
+    })
+
+
+});
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container" id="cart-container">
+
+        {% if object.cartitem_set.count < 1 %}
+
+            <div class="col-sm-6 col-sm-offset-3 text-center">
+                <h1>Your cart is empty</h1>
+                <a href="/">Continue shopping</a>
+            </div>
+
+        {% else %}
+
+            <div class="col-sm-8 col-sm-offset-2">
+                <h2>Shopping Cart</h2>
+                <br/>
+                <table class="table">
+
+                    {% for item in object.cartitem_set.all %}
+
+                        <tr id="item-{{ item.item.id }}">
+                            <td>{{ item.item.get_title }}</td>
+                            <td>
+                                <form id="cart-form" action="." method="GET" url="{% url 'cart' %}">
+                                    <input type="hidden" name="item" value="{{ item.item.id }}"/>
+                                    <input type="number" class="item-qty" name="qty" value="{{ item.quantity }}"/>
+                                    <!--input type="submit" class="btn-update btn btn-link" value="Update item"/-->
+                                </form>
+                            </td>
+                            <td id="item-line-total-{{ item.item.id }}">{{ item.line_item_total }}</td>
+                            <td class="text-right"><a href="{{ item.remove }}">X</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td id="subtotal" colspan="4" class="text-right">Subtotal: {{ object.subtotal }}</td>
+                    </tr>
+                    <tr>
+                        <td id="tax_total" colspan="4" class="text-right">VAT: {{ object.tax_total }}</td>
+                    </tr>
+                    <tr>
+                        <td id="total" colspan="4" class="text-right"><strong>Total: {{ object.total }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td id="total" colspan="4" class="text-right"><a class="btn btn-primary" href="{% url 'checkout' %}">Checkout</a></td>
+                    </tr>
+                </table>
+            </div>
+
+        {% endif %}
+    </div>
+
+{% endblock %}

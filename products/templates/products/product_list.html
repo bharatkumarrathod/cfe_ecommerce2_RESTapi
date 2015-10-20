@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+    <div class="container">
+    <h1>All Products <small><a href="{% url 'categories' %}">Categories</a> </small></h1>
+        <div class="row" id="row-margin-top">
+            {% for product in object_list %}
+                <div class="col-sm-6 col-md-4">
+                   {% include 'products/product_thumbnail.html' with product=product price="True" %}
+                </div>
+{#      {% cycle '' '</div><div class="row">' %}#}
+            {%  endfor %}
+        </div>
+    </div>
+
+{%  endblock %}

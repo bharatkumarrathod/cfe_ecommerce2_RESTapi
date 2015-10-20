@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block script %}
+    <script src="{% static 'js/redirect.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="col-md-8 col-md-offset-2">
+            <h3 class="page-header" id="signup">Thank you for signing up to our Newsletter. You will receive an email confirmation shortly.</h3>
+            <p id="timer"></p>
+        </div>
+    </div>
+
+{% endblock %}

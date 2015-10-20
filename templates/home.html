@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+    {% if featured_image %}
+
+        <div class="jumbotron" {% if featured_image.make_image_background %} id="jumbotron-featured" style="background-image: url('{{ featured_image.image.url }}');" {% endif %}>
+            <div class="container">
+                <div class="row" id="jumbo-content">
+                    <div class="col-sm-3 col-md-6" id="jumbotron-text-area">
+                        <h1>{{ featured_image.product.title }}</h1>
+
+                        <p>{{ featured_image.product.description }}</p>
+
+                        <p>
+                            <a class="btn btn-lg btn-primary" href="{{ featured_image.product.get_absolute_url }}" role="button">More Details</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Jumbotron end -->
+
+        <div class="container">
+            <div class="row">
+                <h3>Featured Products</h3>
+                {% for product in products %}
+                <div class="col-sm-4 col-md-3">
+                   {% include 'products/product_thumbnail.html' with product=product price="True" %}
+                </div>
+            {%  endfor %}
+{#                <div class="col-md-3" id="form">#}
+{#                    <form method="post" action="{% url 'sign_up_successful' %}">#}
+{#                        {% csrf_token %}#}
+{#                        <h3 class="text-align-center">Newsletter Sign up!</h3>#}
+{#                        {{ form|crispy }}#}
+{#                        <input class="btn btn-primary" type="submit" value="Sign Up"/>#}
+{#                    </form>#}
+{#                </div>#}
+            </div>
+        </div>  <!-- article row end -->
+
+
+    {% else %}
+
+        <div class="jumbotron">
+            <div class="container">
+                <div class="row" id="jumbo-content">
+                    <div class="col-md-6">
+                        <h1>Ecommerce 2</h1>
+
+                        <p>This is an example of building a website using Django and Bootstrap following the Coding For
+                            Entrepreneurs ecommerce2 tutorial.</p>
+
+                        <p>
+                            <a class="btn btn-lg btn-primary" href="/#form" role="button">Newsletter Signup &raquo;</a>
+                        </p>
+                    </div>
+                    <div class="col-sm-6 col-sx-12" id="vid-holder"></div>
+                </div>
+            </div>
+        </div> <!-- Jumbotron end -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3>Article Heading 1</h3>
+
+                    <p>Some interesting article with some very interesting text. Now i'm writing a little more just to
+                        see
+                        how the text wraps. Hmmm... very interesting.</p>
+                </div>
+                <div class="col-md-3">
+                    <h3>Article Heading 2</h3>
+
+                    <p>Some interesting article with some very interesting text. Now i'm writing a little more just to
+                        see
+                        how the text wraps. Hmmm... very interesting.</p>
+                </div>
+                <div class="col-md-3">
+                    <h3>Article Heading 3</h3>
+
+                    <p>Some interesting article with some very interesting text. Now i'm writing a little more just to
+                        see
+                        how the text wraps. Hmmm... very interesting.</p>
+                </div>
+                <div class="col-md-3" id="form">
+                    <form method="post" action="{% url 'sign_up_successful' %}">
+                        {% csrf_token %}
+                        <h3 class="text-align-center">Newsletter Sign up!</h3>
+                        {{ form|crispy }}
+                        <input class="btn btn-primary" type="submit" value="Sign Up"/>
+                    </form>
+                </div>
+            </div>
+        </div>  <!-- article row end -->
+    {% endif %}
+
+{% endblock %}
