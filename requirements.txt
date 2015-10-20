@@ -2,8 +2,11 @@ cffi==1.2.1
 cryptography==1.0.1
 Django==1.8.4
 django-crispy-forms==1.5.1
+django-filter==0.11.0
 django-registration-redux==1.2
+djangorestframework==3.2.4
 idna==2.0
+Markdown==2.6.2
 ndg-httpsclient==0.4.0
 Pillow==2.9.0
 pyasn1==0.1.8

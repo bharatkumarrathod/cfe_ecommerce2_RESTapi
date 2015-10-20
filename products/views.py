@@ -5,10 +5,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from rest_framework.generics import ListAPIView
 
 from .mixins import StaffRequiredMixin
 from .models import Product, Variation, Category
 from .forms import VariationInventoryFormSet
+from products.serializers import CategorySerializer
 
 
 class ProductDetailView(DetailView):
@@ -104,3 +106,10 @@ class CategoryDetailView(DetailView):
         products = (product_set | default_products).distinct()
         context["products"] = products
         return context
+
+# API Views
+
+
+class CategoryListAPIView(ListAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
