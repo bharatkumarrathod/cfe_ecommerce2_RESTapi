@@ -5,12 +5,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from rest_framework.generics import ListAPIView
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .mixins import StaffRequiredMixin
 from .models import Product, Variation, Category
 from .forms import VariationInventoryFormSet
-from products.serializers import CategorySerializer
+from products.pagination import ProductPagination, CategoryPagination
+from products.serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, \
+    ProductDetailUpdateSerializer
 
 
 class ProductDetailView(DetailView):
@@ -113,3 +117,28 @@ class CategoryDetailView(DetailView):
 class CategoryListAPIView(ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+    pagination_class = CategoryPagination
+
+
+class CategoryRetrieveAPIView(RetrieveAPIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+
+
+class ProductListAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    # pagination_class = ProductPagination
+
+
+class ProductRetrieveAPIView(RetrieveAPIView):
+    serializer_class = ProductDetailSerializer
+    queryset = Product.objects.all()
+
+
+# class ProductCreateAPIView(CreateAPIView):
+#     serializer_class = ProductDetailUpdateSerializer
+#     queryset = Product.objects.all()
