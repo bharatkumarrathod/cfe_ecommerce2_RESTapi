@@ -6,8 +6,14 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from carts.views import CartView, ItemCountView, CheckoutView, CheckoutFinalView
 from orders.views import AddressSelectFormView, UserAddressCreateView, OrderList
-from products.views import CategoryListAPIView, CategoryRetrieveAPIView, ProductListAPIView, ProductRetrieveAPIView, \
-    ProductCreateAPIView
+from products.views import (
+                            CategoryListAPIView,
+                            CategoryRetrieveAPIView,
+                            ProductListAPIView,
+                            ProductRetrieveAPIView,
+                            # ProductCreateAPIView,
+                            APIHomeView,
+                            )
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -27,6 +33,8 @@ urlpatterns = [
     url(r'^checkout/final/$', CheckoutFinalView.as_view(), name="checkout_final"),
 
     # API URLS
+    url(r'^api/auth/token/$', 'rest_framework_jwt.views.obtain_jwt_token'),
+    url(r'^api/$', APIHomeView.as_view(), name="home_api"),
     url(r'^api/categories/$', CategoryListAPIView.as_view(), name="categories_api"),
     url(r'^api/categories/(?P<pk>\d+)/$', CategoryRetrieveAPIView.as_view(), name="category_detail_api"),
     url(r'^api/products/$', ProductListAPIView.as_view(), name="products_api"),

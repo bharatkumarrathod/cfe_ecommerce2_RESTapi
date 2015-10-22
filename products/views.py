@@ -5,13 +5,18 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from rest_framework import filters
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.reverse import reverse as api_reverse
+from rest_framework.views import APIView
 
 from .mixins import StaffRequiredMixin
 from .models import Product, Variation, Category
 from .forms import VariationInventoryFormSet
+from products.filters import ProductFilter
 from products.pagination import ProductPagination, CategoryPagination
 from products.serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, \
     ProductDetailUpdateSerializer
@@ -114,6 +119,22 @@ class CategoryDetailView(DetailView):
 # API Views
 
 
+class APIHomeView(APIView):
+
+    def get(self, request, format=None):
+        data = {
+            'products': {
+                'count': Product.objects.all().count(),
+                'url': api_reverse('products_api')
+            },
+            'categories': {
+                'count': Category.objects.all().count(),
+                'url': api_reverse('categories_api')
+            }
+        }
+        return Response(data)
+
+
 class CategoryListAPIView(ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -131,6 +152,14 @@ class ProductListAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        filters.DjangoFilterBackend
+                       ]
+    search_fields = ["title", "description"]
+    ordering_fields = ["id", "title"]
+    filter_class = ProductFilter
     # pagination_class = ProductPagination
 
 

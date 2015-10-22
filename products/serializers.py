@@ -87,7 +87,6 @@ class ProductDetailUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-
 class CategorySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='category_detail_api')
     product_set = ProductSerializer(many=True)
@@ -102,6 +101,3 @@ class CategorySerializer(serializers.ModelSerializer):
             'product_set',
             # 'default_category',
         ]
-
-
-

@@ -114,6 +114,7 @@ STATICFILES_DIRS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+
 # Django Registration Redux settings
 
 ACCOUNT_ACTIVATION_DAYS = 7
@@ -121,13 +122,24 @@ REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 
+
 # Default Rest Framework settings
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination'
+    'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',
+    'SEARCH_PARAM': 'q'
+}
+
+
+# JWT settings
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'ecommerce2.utils.jwt_response_payload_handler'
 }
